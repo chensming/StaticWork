@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statical Work</title>
+    <link rel="stylesheet" href="static/mystyle.css">
+    <script type="text/javascript" src="static/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="static/jszip.js"></script>
+    <script src="static//jquery.min.js"></script>
+    <!-- <script src="static//xlsx.core.min.js"></script> -->
+</head>
+
+<body>
+    <div class="mydiv">
+        <text class="tip">请选择一个xlsx文件(注意备份，因为该程序直接对此文件操作)</text>
+        <input type="file" id="fileUpload" />
+        <br>
+        <text class="tip">已完成的学生的序号(比如输入2,33号学生完成了,则填写"2,33"(不用输入引号),序号之间用英文状态下的逗号分开)</text>
+
+        <textarea id="doneNum" name="student" id="done"></textarea>
+        <br>
+        <button id="operation">提交已完成学生</button>
+        <br>
+        <p id="show"></p>
+    </div>
+</body>
+<script>
+    var fileName, numStrs, inputValid;
+
+
+    $("#doneNum").blur(function () {
+        inputValid = true;
+        temp = $("#doneNum").val()
+        if (temp.indexOf("，") != -1) {
+            inputValid = false;
+            // alert("你输入了中文的逗号,请检查后重新输入")
+        }
+        temp = temp.trim().replace(/\s/g, "")
+        numStrs = temp.split(",")
+    })
+
+
+    $("#operation").click(function () {
+
+        $("#doneNum").trigger("blur");
+        if (numStrs.length == 1 && numStrs[0] == "") {
+            alert("您没有输入学生编号");
+            return;
+        }
+
+        if (!inputValid) {
+            alert("你输入了中文的逗号,操作失败")
+        } else {
+            //Reference the FileUpload element.
+            var fileUpload = document.getElementById("fileUpload");
+
+            //Validate whether File is valid Excel file.
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    var reader = new FileReader();
+
+                    //For Browsers other than IE.
+                    if (reader.readAsBinaryString) {
+                        reader.onload = function (e) {
+                            process(e.target.result);
+                        };
+                        reader.readAsBinaryString(fileUpload.files[0]);
+                    } else {
+                        //For IE Browser.
+                        reader.onload = function (e) {
+                            var data = "";
+                            var bytes = new Uint8Array(e.target.result);
+                            for (var i = 0; i < bytes.byteLength; i++) {
+                                data += String.fromCharCode(bytes[i]);
+                            }
+                            process(data);
+                        };
+                        reader.readAsArrayBuffer(fileUpload.files[0]);
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                }
+            } else {
+                alert("Please upload a valid Excel file.");
+            }
+        };
+    })
+
+
+    function process(data) {
+        var StudentName = [];
+        var doneStu = [];
+        var notDoneStu = [];
+        for (var i in numStrs) {
+            doneStu.push(parseInt(numStrs[i]));
+        }
+
+        console.log(doneStu);
+        // console.log(XLSX.version);
+
+        var wb = XLSX.read(data, {
+            type: 'binary',
+            cellHTML: false,
+        });
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        //确定范围
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        endR = range.e.r;
+        
+        //全部学生
+        // for (var i = 1; i <= range.e.r; i++) {
+        //     //The row and column start at 0 
+        //     const cell = ws[XLSX.utils.encode_cell({ r: i, c: 0 })]
+        //     delete cell.w;
+        //     StudentName.push(cell.v)
+        // }
+        // console.log(StudentName);
+        
+
+        for (var i = 1; i <= endR; i++) {
+            cell = ws[XLSX.utils.encode_cell({ r: i, c: 1 })];
+            if (doneStu.indexOf(i + 1) == -1) {
+                cell2 = ws[XLSX.utils.encode_cell({ r: i, c: 0 })];
+                notDoneStu.push(cell2.v);
+            }
+        }
+        console.log(notDoneStu);
+
+        str = "未完成的同学: "
+        for(var i =0; i < notDoneStu.length - 1; i++){
+            str += notDoneStu[i] + ", "; 
+        }
+        str += notDoneStu[notDoneStu.length - 1];
+        $("#show").html(str);
+        
+
+        
+
+       
+        
+
+    }
+
+
+
+
+</script>
+
+</html>

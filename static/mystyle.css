@@ -1,0 +1,80 @@
+body {
+    background-color: blanchedalmond;
+}
+
+.mydiv {
+    text-align: center;
+}
+
+.tip {
+    margin-top: 60px;
+    display: block;
+    color: rgb(28, 190, 76);
+}
+
+#startRow {
+    height: 30px;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: 20px;
+    border-color: rgb(59, 228, 53);
+    width: 200px;
+}
+
+#startRow:hover {
+    height: 30px;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: 20px;
+    border: 2px solid rgb(184, 75, 211);
+    width: 400px;
+}
+
+#doneNum {
+    margin-top: 20px;
+    border-radius: 20px;
+    border: 2px solid rgb(14, 218, 201);
+    font-size: 30px;
+    width: 70%;
+    min-height: 240px;
+}
+
+#doneNum:hover {
+    margin-top: 20px;
+    border-radius: 20px;
+    border: 2px solid rgb(184, 75, 211);
+    font-size: 30px;
+    width: 80%;
+    min-height: 240px;
+}
+
+#operation {
+    margin-top: 40px;
+    width: 20%;
+    height: 40px;
+    border-radius: 20px;
+    color: antiquewhite;
+    background-color: darkseagreen;
+    width: 200px;
+}
+
+#operation:hover {
+    color: white;
+    background-color: aquamarine;
+    width: 300px;
+}
+
+#show {
+    margin-top: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+    text-align: left;
+    color: #8e44ad;
+    font-size: 20px;
+}
+
+#fileUpload{
+    margin-top: 10px;
+}
